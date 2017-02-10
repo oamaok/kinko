@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 const path = require('path');
 const autoprefixer = require('autoprefixer');
 const webpack = require('webpack');
@@ -53,5 +54,5 @@ module.exports = {
         loader: ExtractTextPlugin.extract('css-loader!postcss-loader!sass-loader'),
       },
     ],
-  }
+  },
 };

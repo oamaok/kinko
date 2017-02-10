@@ -1,9 +1,9 @@
+/* eslint-disable import/no-extraneous-dependencies */
 const path = require('path');
 const autoprefixer = require('autoprefixer');
 const webpack = require('webpack');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const plugins = [
   // Injects the JS files into the template HTML file
@@ -23,11 +23,12 @@ const plugins = [
 ];
 
 module.exports = {
-  entry: [
-    path.resolve(__dirname, 'client/index'),
-    path.resolve(__dirname, 'client/sass/main'),
-    'webpack-hot-middleware/client',
-  ],
+  entry: {
+    app: [
+      path.resolve(__dirname, 'client/index'),
+      path.resolve(__dirname, 'client/sass/main'),
+    ],
+  },
 
   plugins,
 
@@ -63,5 +64,5 @@ module.exports = {
         loader: 'url-loader',
       },
     ],
-  }
+  },
 };

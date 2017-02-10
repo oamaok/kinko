@@ -39,15 +39,15 @@ view : Model -> Html Msg
 view model =
   div [ class "panel login-panel" ] [
     div [ class "moeblob" ] [],
-    div [ class "panel-header" ] [ text "log in (ログイン)" ],
+    div [ class "panel-header" ] [ text "log in" ],
     div [ class "panel-content" ] [
       div [ class "input-group" ] [
-        label [] [ text "username (ユーザー名)" ],
+        label [] [ text "username" ],
         input [ type_ "text", onInput UsernameChange ] []
       ],
 
       div [ class "input-group" ] [
-        label [] [ text "password (パスワード)" ],
+        label [] [ text "password" ],
         input [ type_ "password", onInput PasswordChange ] []
       ]
     ]

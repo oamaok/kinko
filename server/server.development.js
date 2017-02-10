@@ -1,16 +1,24 @@
-const path = require('path');
-const express = require('express');
+/* eslint-disable import/no-extraneous-dependencies */
 const webpack = require('webpack');
-const webpackMiddleware = require('webpack-dev-middleware');
-const webpackHotMiddleware = require('webpack-hot-middleware');
+const nodemon = require('nodemon');
+const WebpackDevServer = require('webpack-dev-server');
 
 const config = require('../webpack.development.config.js');
-const port = 3000;
-const app = express();
+
+const PORT = 3000;
+
+config.entry.app.unshift(`webpack-dev-server/client?http://localhost:${PORT}/`, 'webpack/hot/dev-server');
 
 const compiler = webpack(config);
-const middleware = webpackMiddleware(compiler, {
-  contentBase: 'src',
+const server = new WebpackDevServer(compiler, {
+  hot: true,
+  proxy: {
+    '/api': {
+      target: {
+        port: 3001,
+      },
+    },
+  },
   stats: {
     colors: true,
     hash: false,
@@ -21,19 +29,32 @@ const middleware = webpackMiddleware(compiler, {
   },
 });
 
-app.use(middleware);
-app.use(webpackHotMiddleware(compiler));
+server.listen(PORT);
 
-app.all('*', (req, res) => {
-  res.write(middleware.fileSystem.readFileSync(path.join(__dirname, '../build/index.html')));
-  res.end();
+const backend = nodemon({
+  exec: 'node',
+  restartable: 'rs',
+  script: './server/server',
+  verbose: true,
+  watch: [
+    './server/',
+  ],
+  env: {
+    NODE_ENV: 'development',
+  },
+  ext: 'js json',
 });
 
-const server = app.listen(port, '0.0.0.0', (err) => {
-  if (err) {
-    process.stderr.write(`${err}\n`);
-    return;
-  }
-
-  process.stdout.write(`Listening on port ${port}.\n`);
+backend.on('crash', () => {
+  process.stderr.write('Backend crashed!\n');
 });
+
+backend.on('restart', () => {
+  process.stdout.write('Changes in files detected, restarting backend.\n');
+});
+
+const handleExit = () => {
+  server.close(() => process.exit(0));
+};
+
+process.on('SIGINT', handleExit);
