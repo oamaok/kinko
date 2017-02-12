@@ -41,16 +41,14 @@ function expand(app, S, models) {
     AccessToken,
   } = models;
 
-  User.belongsToMany(Role, { as: 'roles', through: RoleMapping });
+  User.belongsToMany(Role, { through: RoleMapping });
   User.hasMany(AccessToken);
 
   User.login = (username, password) => {
     const startTime = (new Date()).getTime();
     const error = new Error('Invalid email or password.');
 
-    return User.findOne({ where: {
-      username,
-    } })
+    return User.findOne({ where: { username }, include: { model: Role } })
     .then((user) => {
       if (!user) {
         throw error;
@@ -62,11 +60,22 @@ function expand(app, S, models) {
         throw error;
       }
 
-      return AccessToken.create({
-        userId: user.id,
+      const pAccessToken = AccessToken.create({
+        UserId: user.id,
         ttl: app.config.auth.ttl,
       });
+
+      return Promise.all([
+        user,
+        pAccessToken,
+      ]);
     })
+    .then(([user, accessToken]) =>
+      ({
+        user,
+        accessToken,
+      })
+    )
     .catch(err =>
       // Prevent timing attacks by returning errors in constant time
       new Promise((resolve, reject) => {

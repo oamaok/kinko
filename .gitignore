@@ -2,3 +2,5 @@ elm-stuff
 node_modules
 *.xcf
 build/
+server/test.js
+*.log

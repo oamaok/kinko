@@ -5,7 +5,7 @@ function define(app, S, sequelize) {
     id: {
       type: S.TEXT,
       primaryKey: true,
-      defaultValue: () => crypto.randomBytes(256).toString('hex'),
+      defaultValue: () => crypto.randomBytes(128).toString('base64'),
     },
     ttl: S.INTEGER,
     expired: {

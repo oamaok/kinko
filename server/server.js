@@ -1,4 +1,6 @@
 const Koa = require('koa');
+const json = require('koa-json');
+const errorHandler = require('koa-json-error');
 const config = require('./config');
 const models = require('./models');
 const middleware = require('./middleware');
@@ -6,17 +8,20 @@ const routes = require('./routes');
 
 const app = new Koa();
 
+app.use(errorHandler());
+app.use(json({ pretty: false }));
+
 // Initialize configurations
 Object.assign(app, { config });
 
 // Initialize models
 models(app);
 
-// Apply middleware
-middleware(app);
-
 // Initialize routes
 routes(app);
+
+// Apply middleware
+middleware(app);
 
 if (require.main === module) {
   // Start the app

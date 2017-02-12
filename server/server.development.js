@@ -34,7 +34,7 @@ server.listen(PORT);
 const backend = nodemon({
   exec: 'node',
   restartable: 'rs',
-  script: './server/server',
+  script: './server/index',
   verbose: true,
   watch: [
     './server/',

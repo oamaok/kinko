@@ -34,8 +34,8 @@ Role.findOne({ where: { name: 'admin' } })
       User.create(admin)
       .then(user =>
         RoleMapping.create({
-          UserId: user.get('id'),
-          RoleId: role.get('id'),
+          UserId: user.id,
+          RoleId: role.id,
         })
       )
       .then(() => {

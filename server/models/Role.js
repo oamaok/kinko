@@ -14,7 +14,7 @@ function expand(app, S, models) {
     RoleMapping,
   } = models;
 
-  Role.belongsToMany(User, { as: 'users', through: RoleMapping });
+  Role.belongsToMany(User, { through: RoleMapping });
 }
 
 module.exports = {

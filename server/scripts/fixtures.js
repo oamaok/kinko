@@ -7,10 +7,26 @@ const {
 const pFindOrCreateMany = (model, data) =>
   Promise.all(data.map(v => model.findOrCreate({ where: v })));
 
-pFindOrCreateMany(Role, [
+const pFixtures = [];
+
+const pRoles = pFindOrCreateMany(Role, [
   { name: 'admin' },
 ])
-.then((roles) => {
-  console.log('Created the following roles: ', roles.filter(r => r[1]).map(r => r[0].dataValues));
+.then(roles => ['roles', roles]);
+
+pFixtures.push(pRoles);
+
+
+Promise.all(pFixtures)
+.then((fixtures) => {
+  fixtures.forEach(([name, objects]) => {
+    console.log(`Created the following ${name}:`, objects.filter(obj => obj[1]).map(obj => obj[0].dataValues));
+  });
+
+  process.exit(0);
+})
+.catch((err) => {
+  console.error(err);
+  process.exit(1);
 });
 
