@@ -1,4 +1,7 @@
 const bcrypt = require('bcryptjs');
+const {
+  delay,
+} = require('../utils');
 
 function define(app, S, sequelize) {
   return sequelize.define('User', {
@@ -44,12 +47,13 @@ function expand(app, S, models) {
   User.belongsToMany(Role, { through: RoleMapping });
   User.hasMany(AccessToken);
 
-  User.login = (username, password) => {
+  User.login = async (username, password) => {
     const startTime = (new Date()).getTime();
     const error = new Error('Invalid email or password.');
 
-    return User.findOne({ where: { username }, include: { model: Role } })
-    .then((user) => {
+    try {
+      const user = await User.findOne({ where: { username }, include: { model: Role } });
+
       if (!user) {
         throw error;
       }
@@ -60,29 +64,19 @@ function expand(app, S, models) {
         throw error;
       }
 
-      const pAccessToken = AccessToken.create({
+      const accessToken = await AccessToken.create({
         UserId: user.id,
         ttl: app.config.auth.ttl,
       });
 
-      return Promise.all([
-        user,
-        pAccessToken,
-      ]);
-    })
-    .then(([user, accessToken]) =>
-      ({
-        user,
+      return {
         accessToken,
-      })
-    )
-    .catch(err =>
-      // Prevent timing attacks by returning errors in constant time
-      new Promise((resolve, reject) => {
-        const timeout = 2000 - ((new Date()).getTime() - startTime);
-        setTimeout(() => reject(err), timeout);
-      })
-    );
+        user,
+      };
+    } catch (err) {
+      await delay(2000 - ((new Date()).getTime() - startTime));
+      throw err;
+    }
   };
 }
 
