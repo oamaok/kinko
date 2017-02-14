@@ -54,7 +54,7 @@ update msg model =
     Login username password ->
       ({ model | loading = True, error = False }, loginRequest username password)
     LoginResponse (Ok res) ->
-      ({ model | loading = False, error = False, token = res.token, username = res.username, roles = res.roles }, Cmd.none)
+      ({ initialModel | token = res.token, username = res.username, roles = res.roles }, Cmd.none)
     LoginResponse (Err _) ->
       ({ model |  loading = False, error = True }, Cmd.none)
     Logout ->

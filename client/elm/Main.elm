@@ -1,9 +1,10 @@
-import Html exposing (Html, button, text)
-import Html.Events exposing (onClick)
-import Auth
-import App exposing (initialModel)
+import Html exposing (Html)
 import Navigation
 
+import App exposing (initialModel)
+import Login.View as LoginView
+
+main : Program Never App.Model App.Msg
 main =
   Navigation.program App.UrlChange
     { init = init
@@ -18,4 +19,4 @@ init loc =
 
 view : App.Model -> Html App.Msg
 view model =
-  button [ onClick <| App.Auth <| Auth.Login "test" "test" ] [ text "test" ]
+  LoginView.view model
