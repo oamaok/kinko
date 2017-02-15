@@ -1,5 +1,5 @@
-module Login.Update exposing (Msg(..), update)
-import Login.Model exposing (Model)
+module Pages.Login.Update exposing (Msg(..), update)
+import Pages.Login.Model exposing (Model)
 
 type Msg
   = UsernameChange String

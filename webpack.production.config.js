@@ -53,6 +53,10 @@ module.exports = {
         test: /\.s[ac]ss$/,
         loader: ExtractTextPlugin.extract('css-loader!postcss-loader!sass-loader'),
       },
+      {
+        test: /\.(png|jpg|jpeg|gif|ttf|eot|woff2|woff)$/,
+        loader: 'url-loader',
+      },
     ],
   },
 };

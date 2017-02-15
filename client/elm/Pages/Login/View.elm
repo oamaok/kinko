@@ -1,4 +1,4 @@
-module Login.View exposing (view)
+module Pages.Login.View exposing (view)
 
 import Html exposing (Html, div, label, form, input, text)
 import Html.Attributes exposing (class, classList, type_, value, hidden, disabled)
@@ -6,7 +6,7 @@ import Html.Events exposing (onInput, onSubmit)
 
 import App exposing (Model, Msg)
 import Auth
-import Login.Update
+import Pages.Login.Update as LoginUpdate
 
 view : Model -> Html Msg
 view model =
@@ -28,12 +28,12 @@ view model =
       form [ class "panel-content", onSubmit <| App.AuthMsg <| Auth.Login username password ] [
         div [ class "input-group" ] [
           label [] [ text "username" ],
-          input [ type_ "text", disabled loading, onInput <| App.LoginMsg << Login.Update.UsernameChange ] []
+          input [ type_ "text", disabled loading, onInput <| App.LoginMsg << LoginUpdate.UsernameChange ] []
         ],
 
         div [ class "input-group" ] [
           label [] [ text "password" ],
-          input [ type_ "password", disabled loading, onInput <| App.LoginMsg << Login.Update.PasswordChange ] []
+          input [ type_ "password", disabled loading, onInput <| App.LoginMsg << LoginUpdate.PasswordChange ] []
         ],
         div [ class "error", hidden (not model.auth.error) ] [ text "log in failed." ],
         input [ type_ "submit", disabled loading, value "log in"] [],

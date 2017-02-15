@@ -49,7 +49,7 @@ function expand(app, S, models) {
 
   User.login = async (username, password) => {
     const startTime = (new Date()).getTime();
-    const error = new Error('Invalid email or password.');
+    const error = new Error('Invalid username or password.');
 
     try {
       const user = await User.findOne({ where: { username }, include: { model: Role } });
@@ -74,7 +74,7 @@ function expand(app, S, models) {
         user,
       };
     } catch (err) {
-      await delay(2000 - ((new Date()).getTime() - startTime));
+      await delay(1500 - ((new Date()).getTime() - startTime));
       throw err;
     }
   };

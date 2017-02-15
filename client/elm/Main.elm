@@ -2,7 +2,8 @@ import Html exposing (Html)
 import Navigation
 
 import App exposing (initialModel)
-import Login.View as LoginView
+import Pages.Login.View as LoginView
+import Router exposing (Route, ViewType(..), router)
 
 main : Program Never App.Model App.Msg
 main =
@@ -19,4 +20,6 @@ init loc =
 
 view : App.Model -> Html App.Msg
 view model =
-  LoginView.view model
+  router model [
+    Route "login" <| NoGroups LoginView.view
+  ]

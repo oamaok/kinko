@@ -11,6 +11,10 @@ input
       outline: none
     &:hover
       border-color: #a44
+    &:disabled, &:hover:disabled
+      background-color: #fff
+      border-color: #ccc
+      color: #ccc
   &[type="button"], &[type="submit"]
     background-color: #a44
     color: #f7f7f7
@@ -24,6 +28,12 @@ input
       color: #fff
     &:active
       background-color: darken(#a44, 5%)
-      box-shadow: inset 0 5px 1px rgba(0,0,0,0.25)
+      box-shadow: inset 0 4px 1px rgba(0,0,0,0.25)
+      outline: none
+      color: #eee
+    &:disabled
+      background-color: #966
+      border-color: darken(#966, 5%)
+      box-shadow: none
       outline: none
       color: #eee

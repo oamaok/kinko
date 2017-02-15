@@ -1,8 +1,8 @@
 module App exposing (Model, Msg(..), initialModel, update)
 
 import Auth
-import Login.Update as LoginUpdate
-import Login.Model as LoginModel
+import Pages.Login.Update as LoginUpdate
+import Pages.Login.Model as LoginModel
 
 import Navigation
 
@@ -10,6 +10,7 @@ type alias Model =
   { auth : Auth.Model
   , login : LoginModel.Model
   , location : Maybe Navigation.Location
+  , redirectLocation : Maybe Navigation.Location
   }
 
 type Msg
@@ -22,6 +23,7 @@ initialModel =
   { auth = Auth.initialModel
   , login = LoginModel.initialModel
   , location = Nothing
+  , redirectLocation = Nothing
   }
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -38,4 +40,13 @@ update msg model =
       in
         ({ model | login = childModel }, Cmd.map LoginMsg childCmd)
     UrlChange location ->
-      ({ model | location = Just location }, Cmd.none)
+      let
+        auth =
+          model.auth
+        shouldRedirectToLogin =
+          String.length auth.token == 0 && location.hash /= "#login"
+      in
+        if shouldRedirectToLogin then
+          ({ model | redirectLocation = Just location }, Navigation.newUrl "#login")
+        else
+          ({ model | location = Just location }, Cmd.none)

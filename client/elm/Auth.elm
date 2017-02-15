@@ -3,6 +3,7 @@ module Auth exposing (Msg(..), Model, initialModel, update)
 import Json.Encode as JE
 import Json.Decode as JD exposing (Decoder)
 import Http
+import Navigation
 
 type Msg
   = Login String String
@@ -54,7 +55,7 @@ update msg model =
     Login username password ->
       ({ model | loading = True, error = False }, loginRequest username password)
     LoginResponse (Ok res) ->
-      ({ initialModel | token = res.token, username = res.username, roles = res.roles }, Cmd.none)
+      ({ initialModel | token = res.token, username = res.username, roles = res.roles }, Navigation.newUrl "#")
     LoginResponse (Err _) ->
       ({ model |  loading = False, error = True }, Cmd.none)
     Logout ->
