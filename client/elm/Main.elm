@@ -1,25 +1,29 @@
-import Html exposing (Html)
+import Html exposing (Html, div, text)
 import Navigation
 
-import App exposing (initialModel)
-import Pages.Login.View as LoginView
-import Router exposing (Route, ViewType(..), router)
+import Auth
+import App.Model  exposing (Model, Msg(..), initialModel)
+import App.Update exposing (update)
+import Routes
 
-main : Program Never App.Model App.Msg
+import Pages.Initializer.View as Initializer
+
+main : Program Never Model Msg
 main =
-  Navigation.program App.UrlChange
+  Navigation.program UrlChange
     { init = init
     , view = view
-    , update = App.update
+    , update = update
     , subscriptions = (\_ -> Sub.none)
     }
 
-init : Navigation.Location -> (App.Model, Cmd App.Msg)
-init loc =
-  ({ initialModel | location = Just loc }, Cmd.none)
+init : Navigation.Location -> (Model, Cmd Msg)
+init location =
+  update (AuthMsg <| Auth.Init location) initialModel
 
-view : App.Model -> Html App.Msg
+view : Model -> Html Msg
 view model =
-  router model [
-    Route "login" <| NoGroups LoginView.view
-  ]
+  if model.auth.isInitializing then
+    Initializer.view model
+  else
+    Routes.view model

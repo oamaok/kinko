@@ -1,26 +1,38 @@
-.login-panel
-  position: relative
-  top: 50%
-  transform: translateY(-50%)
-  margin-left: auto
-  margin-right: auto
-  width: 30em
-  .moeblob
-    background-image: url('../assets/img/moe.png')
-    background-size: contain
-    background-repeat: no-repeat
-    background-position: 90% 10%
-    position: absolute
-    height: 100px
-    width: 100%
-    top: -71px
-  .error
-    line-height: 1.5em
-    float: left
-    color: #a44
-  .spinner
-    margin-right: 1rem
-    float: right
-    font-size: 0.22em
-  input[type="submit"]
-    float: right
+.login-wrapper
+  width: 100%
+  display: flex
+  align-items: center
+  justify-content: center
+  .login-panel
+    position: relative
+    width: 30em
+    .moeblob
+      background-image: url('../assets/img/moe.png')
+      background-size: contain
+      background-repeat: no-repeat
+      background-position: 90% 10%
+      position: absolute
+      height: 100px
+      width: 100%
+      top: -72px
+    .error
+      line-height: 1.5em
+      float: left
+      color: #a44
+      opacity: 0
+      transition: all 0.1s ease-out
+      position: relative
+      top: -0.2em
+    &.error .error
+      opacity: 1
+      top: 0
+    .spinner
+      margin-right: 1rem
+      float: right
+      font-size: 0.22em
+      opacity: 0
+      transition: all 0.1s ease-out
+    &.loading .spinner
+      opacity: 1
+    input[type="submit"]
+      float: right

@@ -19,6 +19,7 @@ const server = new WebpackDevServer(compiler, {
       },
     },
   },
+  historyApiFallback: true,
   stats: {
     colors: true,
     hash: false,
@@ -34,7 +35,7 @@ server.listen(PORT);
 const backend = nodemon({
   exec: 'node',
   restartable: 'rs',
-  script: './server/index',
+  script: './server/server',
   verbose: true,
   watch: [
     './server/',

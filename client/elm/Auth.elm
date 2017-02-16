@@ -1,4 +1,4 @@
-module Auth exposing (Msg(..), Model, initialModel, update)
+module Auth exposing (Msg(..), Model, initAuth, initialModel, update)
 
 import Json.Encode as JE
 import Json.Decode as JD exposing (Decoder)
@@ -6,20 +6,26 @@ import Http
 import Navigation
 
 type Msg
-  = Login String String
+  = Init Navigation.Location
+  | InitResponse (Result Http.Error Response)
+  | Login String String
   | LoginResponse (Result Http.Error Response)
   | Logout
+  | LogoutResponse (Result Http.Error Bool)
 
 type alias Model = 
   { loading : Bool
   , error : Bool
-  , token : String
+  , isInitializing : Bool
+  , isAuthenticated : Bool
+  , userId : String
   , username : String
   , roles : List String
+  , redirectUrl : String
   }
 
 type alias Response =
-  { token : String
+  { userId : String
   , username : String
   , roles : List String
   }
@@ -28,10 +34,17 @@ initialModel : Model
 initialModel =
   { loading = False
   , error = False
-  , token = ""
+  , isInitializing = True
+  , isAuthenticated = False
+  , userId = ""
   , username = ""
   , roles = []
+  , redirectUrl = "/"
   }
+
+initAuth : Cmd Msg
+initAuth =
+  Http.send InitResponse (Http.get "/api/me" responseDecoder)
 
 loginRequest : String -> String -> Cmd Msg
 loginRequest username password =
@@ -43,20 +56,41 @@ loginBody username password =
 
 responseDecoder : Decoder Response
 responseDecoder =
-  JD.map3 Response (JD.field "token" JD.string) (JD.field "username" JD.string) (JD.field "roles" <| JD.list JD.string) 
-  
-logoutRequest : String -> Cmd Msg
-logoutRequest token =
-  Cmd.none
+  JD.map3 Response (JD.field "id" JD.string) (JD.field "username" JD.string) (JD.field "roles" <| JD.list JD.string) 
+
+
+logoutRequest : Cmd Msg
+logoutRequest =
+  Http.send LogoutResponse (Http.get "/api/logout" JD.bool)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
+    Init location ->
+      ({ initialModel | redirectUrl = location.pathname }, initAuth)
+
+    InitResponse (Ok res) ->
+      ( { model
+        | isInitializing = False
+        , isAuthenticated = True
+        , userId = res.userId
+        , username = res.username
+        , roles = res.roles
+      }, Navigation.newUrl model.redirectUrl)
+
+    InitResponse (Err _) ->
+      ({ model | isInitializing = False }, Navigation.newUrl "/login")
+
     Login username password ->
       ({ model | loading = True, error = False }, loginRequest username password)
     LoginResponse (Ok res) ->
-      ({ initialModel | token = res.token, username = res.username, roles = res.roles }, Navigation.newUrl "#")
+      ({ model | loading = False, userId = res.userId, username = res.username, roles = res.roles, isAuthenticated = True }, Navigation.newUrl model.redirectUrl)
     LoginResponse (Err _) ->
-      ({ model |  loading = False, error = True }, Cmd.none)
+      ({ model | loading = False, error = True }, Cmd.none)
     Logout ->
-      (initialModel, logoutRequest model.token)
+      (initialModel, logoutRequest)
+
+    LogoutResponse (Ok res) ->
+      ({ initialModel | isInitializing = False }, Navigation.newUrl "/login")
+    LogoutResponse (Err _) ->
+      ({ initialModel | isInitializing = False }, Navigation.newUrl "/login")

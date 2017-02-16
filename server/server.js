@@ -1,3 +1,7 @@
+require('babel-register')({
+  plugins: ['transform-async-to-generator'],
+});
+
 const Koa = require('koa');
 const json = require('koa-json');
 const errorHandler = require('koa-json-error');

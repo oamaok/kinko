@@ -8,7 +8,7 @@ module.exports = (app) => {
 
   app.use(async (ctx, next) => {
     await next();
-    const authToken = ctx.request.header.authorization;
+    const authToken = ctx.cookies.get('token');
     Object.assign(ctx, { user: {} });
 
     const token = await AccessToken.findById(authToken, { include: {
@@ -32,6 +32,11 @@ module.exports = (app) => {
     token.changed('updatedAt', true);
     await token.save();
 
+    ctx.cookies.set('token', token.id, {
+      expires: new Date(now.getTime() + (token.ttl * 1000)),
+      overwrite: true,
+    });
+
     const user = token.User;
 
     Object.assign(ctx, {
@@ -39,6 +44,11 @@ module.exports = (app) => {
         id: user.id,
         username: user.username,
         roles: user.Roles.map(role => role.name),
+      },
+      accessToken: {
+        id: token.id,
+        ttl: token.ttl,
+        updatedAt,
       },
     });
   });
