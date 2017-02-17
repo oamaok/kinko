@@ -45,12 +45,14 @@ bestRoute model routes pathname =
               case match of
                 Just m -> String.length m.match
                 Nothing -> 0
-            groups =
+            groups = 
               case match of
                 Just m -> m.submatches
                 Nothing -> []
+            -- Check if the current user has all the needed roles for the route
             hasRoles = (route.roles
               |> List.all ((flip List.member) roles))
+              -- If the route has zero required roles return true
               || List.length route.roles == 0
           in
             if matchLength /= 0 && hasRoles then
@@ -88,7 +90,10 @@ createRouter routes =
         -- The only case the router should handle
         UrlChange location ->
           let
-            bestRoute_ = bestRoute model routes location.pathname
+            bestRoute_ =
+              bestRoute model routes location.pathname
+            updatedModel =
+              { model | location = Just location }
           in
             case bestRoute_ of
               Just (route, groups) ->
@@ -96,13 +101,13 @@ createRouter routes =
                   Just onEnter -> 
                     case onEnter of
                       Params onEnterMsg ->
-                        update (onEnterMsg groups) ({ model | location = Just location }) 
+                        update (onEnterMsg groups) updatedModel
                       NoParams onEnterMsg ->
-                        update onEnterMsg ({ model | location = Just location })
+                        update onEnterMsg updatedModel
                   Nothing ->
-                    ({ model | location = Just location }, Cmd.none)
+                    (updatedModel, Cmd.none)
               Nothing ->
-                ({ model | location = Just location }, Cmd.none)
+                (updatedModel, Cmd.none)
 
         -- If the message is not an url change, let the actual update function handle it
         _ -> update msg model
