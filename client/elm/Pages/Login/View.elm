@@ -5,11 +5,11 @@ import Html.Attributes exposing (class, classList, type_, value, hidden, disable
 import Html.Events exposing (onInput, onSubmit)
 
 import App.Model as App
-import Aliases exposing (ViewF)
+import Aliases exposing (ViewFn)
 import Auth
 import Pages.Login.Update as LoginUpdate
 
-view : ViewF
+view : ViewFn
 view model =
   let
     username =

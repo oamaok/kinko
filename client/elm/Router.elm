@@ -2,7 +2,7 @@ module Router exposing (Route, Router, MessageType(..), createRouter)
 
 import Regex exposing (HowMany(..), regex)
 
-import Aliases exposing (ViewF, UpdateF)
+import Aliases exposing (ViewFn, UpdateFn)
 import App.Model as AppModel exposing (Model, Msg(..))
 import Pages.NotFound.View as NotFound
 
@@ -14,12 +14,12 @@ type alias Route =
   { regex : String
   , roles : List String
   , onEnter : Maybe MessageType
-  , view : ViewF
+  , view : ViewFn
   }
 
 type alias Router =
-  { view : ViewF
-  , update : Msg -> Model -> UpdateF -> (Model, Cmd Msg)
+  { view : ViewFn
+  , update : Msg -> Model -> UpdateFn -> (Model, Cmd Msg)
   }
 
 type alias ScoredRoute =
@@ -69,7 +69,7 @@ bestRoute model routes pathname =
 createRouter : List Route -> Router
 createRouter routes =
   let
-    view : ViewF
+    view : ViewFn
     view model =
       let
         pathname =
@@ -84,7 +84,7 @@ createRouter routes =
           Nothing ->
             NotFound.view model
 
-    routerUpdate : Msg -> Model -> UpdateF -> (Model, Cmd Msg)
+    routerUpdate : Msg -> Model -> UpdateFn -> (Model, Cmd Msg)
     routerUpdate msg model update =
       case msg of
         -- The only case the router should handle

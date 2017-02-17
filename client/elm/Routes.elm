@@ -2,7 +2,7 @@ module Routes exposing (view, update)
 
 import Router exposing (Router, MessageType(..), createRouter)
 import App.Model exposing (Model, Msg(..))
-import Aliases exposing (UpdateF, ViewF)
+import Aliases exposing (UpdateFn, ViewFn)
 
 import Pages.Login.View as LoginPage
 import Pages.Files.View as FilesPage
@@ -23,8 +23,8 @@ router = createRouter [
     }
   ]
 
-view : ViewF
+view : ViewFn
 view = router.view
 
-update : Msg -> Model -> UpdateF -> (Model, Cmd Msg)
+update : Msg -> Model -> UpdateFn -> (Model, Cmd Msg)
 update = router.update

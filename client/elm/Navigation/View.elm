@@ -7,10 +7,10 @@ import Html.Events exposing (onClick)
 import UIComponent exposing (icon)
 
 import App.Model as App
-import Aliases exposing (ViewF)
+import Aliases exposing (ViewFn)
 import Auth
 
-view : ViewF
+view : ViewFn
 view model =
   div [ class "navigation" ] [
     div [ class "container" ] [

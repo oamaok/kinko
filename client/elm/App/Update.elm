@@ -2,7 +2,7 @@ module App.Update exposing (update)
 
 import Navigation
 
-import Aliases exposing (UpdateF)
+import Aliases exposing (UpdateFn)
 import App.Model exposing (..)
 import Auth
 import Routes
@@ -10,7 +10,7 @@ import Routes
 import Pages.Login.Update as LoginUpdate
 import Pages.Files.Update as FilesUpdate
 
-update_ : UpdateF
+update_ : UpdateFn
 update_ msg model =
   case msg of
     AuthMsg authMsg ->
@@ -34,5 +34,5 @@ update_ msg model =
     _ ->
       (model, Cmd.none)
 
-update : UpdateF
+update : UpdateFn
 update msg model = Routes.update msg model update_

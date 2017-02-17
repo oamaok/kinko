@@ -1,6 +1,6 @@
 import Navigation
 
-import Aliases exposing (ViewF)
+import Aliases exposing (ViewFn)
 import Auth
 import App.Model  exposing (Model, Msg(..), initialModel)
 import App.Update exposing (update)
@@ -21,7 +21,7 @@ init : Navigation.Location -> (Model, Cmd Msg)
 init location =
   update (AuthMsg <| Auth.Init location) initialModel
 
-view : ViewF
+view : ViewFn
 view model =
   if model.auth.isInitializing then
     Initializer.view model

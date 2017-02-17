@@ -3,11 +3,11 @@ module Pages.NotFound.View exposing (view)
 import Html exposing (Html, div, text)
 import Html.Attributes exposing (class)
 
-import Aliases exposing (ViewF)
+import Aliases exposing (ViewFn)
 import MainContainer.View as MainContainer
 import UIComponent exposing (icon)
 
-view : ViewF
+view : ViewFn
 view model =
   MainContainer.view model [
     div [ class "container" ] [
