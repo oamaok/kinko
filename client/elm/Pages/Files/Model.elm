@@ -16,7 +16,7 @@ type alias FileEntry =
     { id : Int
     , name : String
     , isDirectory : Bool
-    -- , children : List 
+    -- , children : List
     }
 
 type alias Model =
@@ -28,4 +28,4 @@ initialModel : Model
 initialModel =
   { entries = []
   , path = []
-  } 
+  }

@@ -12,7 +12,7 @@ view model =
     div [ class "container" ] [
       div [ class "panel" ] [
         div [ class "panel-body" ] [
-          text "this is the index view" 
+          text "this is the index view"
         ]
       ]
     ]

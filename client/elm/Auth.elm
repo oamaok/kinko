@@ -13,7 +13,7 @@ type Msg
   | Logout
   | LogoutResponse (Result Http.Error Bool)
 
-type alias Model = 
+type alias Model =
   { loading : Bool
   , error : Bool
   , isInitializing : Bool
@@ -56,7 +56,7 @@ loginBody username password =
 
 responseDecoder : Decoder Response
 responseDecoder =
-  JD.map3 Response (JD.field "id" JD.string) (JD.field "username" JD.string) (JD.field "roles" <| JD.list JD.string) 
+  JD.map3 Response (JD.field "id" JD.string) (JD.field "username" JD.string) (JD.field "roles" <| JD.list JD.string)
 
 
 logoutRequest : Cmd Msg

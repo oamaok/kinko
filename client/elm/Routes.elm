@@ -8,7 +8,7 @@ import Pages.Login.View as LoginPage
 import Pages.Files.View as FilesPage
 import Pages.Files.Model as FilesModel
 
-router : Router 
+router : Router
 router = createRouter [
     { regex = "login"
     , roles = []

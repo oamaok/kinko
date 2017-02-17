@@ -12,10 +12,10 @@ view model =
     div [ class "container" ] [
       div [ class "panel" ] [
         div [ class "panel-header" ] [
-          text "events" 
+          text "events"
         ],
         div [ class "panel-body" ] [
-          text "events" 
+          text "events"
         ]
       ]
     ]

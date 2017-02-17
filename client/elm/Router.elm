@@ -35,7 +35,7 @@ bestRoute model routes pathname =
     roles =
       model.auth.roles
     matchingRoutes = routes
-      |> List.filterMap (\route -> 
+      |> List.filterMap (\route ->
           let
             matches =
               Regex.find (AtMost 1) (regex <| "^/" ++ route.regex ++ "$") pathname
@@ -45,7 +45,7 @@ bestRoute model routes pathname =
               case match of
                 Just m -> String.length m.match
                 Nothing -> 0
-            groups = 
+            groups =
               case match of
                 Just m -> m.submatches
                 Nothing -> []
@@ -98,7 +98,7 @@ createRouter routes =
             case bestRoute_ of
               Just (route, groups) ->
                 case route.onEnter of
-                  Just onEnter -> 
+                  Just onEnter ->
                     case onEnter of
                       Params onEnterMsg ->
                         update (onEnterMsg groups) updatedModel
