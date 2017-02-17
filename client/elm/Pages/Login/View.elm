@@ -4,11 +4,12 @@ import Html exposing (Html, div, label, form, input, text)
 import Html.Attributes exposing (class, classList, type_, value, hidden, disabled)
 import Html.Events exposing (onInput, onSubmit)
 
-import App.Model as App exposing (Model, Msg)
+import App.Model as App
+import Aliases exposing (ViewF)
 import Auth
 import Pages.Login.Update as LoginUpdate
 
-view : Model -> Html Msg
+view : ViewF
 view model =
   let
     username =

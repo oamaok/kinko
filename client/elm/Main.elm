@@ -1,6 +1,6 @@
-import Html exposing (Html, div, text)
 import Navigation
 
+import Aliases exposing (ViewF)
 import Auth
 import App.Model  exposing (Model, Msg(..), initialModel)
 import App.Update exposing (update)
@@ -21,7 +21,7 @@ init : Navigation.Location -> (Model, Cmd Msg)
 init location =
   update (AuthMsg <| Auth.Init location) initialModel
 
-view : Model -> Html Msg
+view : ViewF
 view model =
   if model.auth.isInitializing then
     Initializer.view model
