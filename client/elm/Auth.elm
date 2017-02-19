@@ -67,8 +67,14 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     Init location ->
-      ({ initialModel | redirectUrl = location.pathname }, initAuth)
-
+      let
+        pathname =
+          if location.pathname == "/login" then
+            "/"
+          else
+            location.pathname
+      in
+        ({ initialModel | redirectUrl = pathname }, initAuth)
     InitResponse (Ok res) ->
       ( { model
         | isInitializing = False
@@ -77,7 +83,6 @@ update msg model =
         , username = res.username
         , roles = res.roles
       }, Navigation.newUrl model.redirectUrl)
-
     InitResponse (Err _) ->
       ({ model | isInitializing = False }, Navigation.newUrl "/login")
 
@@ -87,9 +92,9 @@ update msg model =
       ({ model | loading = False, userId = res.userId, username = res.username, roles = res.roles, isAuthenticated = True }, Navigation.newUrl model.redirectUrl)
     LoginResponse (Err _) ->
       ({ model | loading = False, error = True }, Cmd.none)
+
     Logout ->
       (initialModel, logoutRequest)
-
     LogoutResponse (Ok res) ->
       ({ initialModel | isInitializing = False }, Navigation.newUrl "/login")
     LogoutResponse (Err _) ->

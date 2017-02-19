@@ -4,3 +4,4 @@ node_modules
 build/
 server/test.js
 *.log
+server/config/config.development.json

@@ -12,12 +12,14 @@ type Msg
 
 type alias Response = List FileEntry
 
+type Children = Children (List FileEntry)
+
 type alias FileEntry =
-    { id : Int
-    , name : String
-    , isDirectory : Bool
-    -- , children : List
-    }
+  { id : Int
+  , name : String
+  , isDirectory : Bool
+  , children : Children
+  }
 
 type alias Model =
   { entries : List FileEntry
