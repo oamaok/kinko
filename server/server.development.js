@@ -1,4 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
+const path = require('path');
 const webpack = require('webpack');
 const nodemon = require('nodemon');
 const WebpackDevServer = require('webpack-dev-server');
@@ -19,6 +20,7 @@ const server = new WebpackDevServer(compiler, {
       },
     },
   },
+  contentBase: path.resolve(__dirname, '../client/'),
   historyApiFallback: true,
   stats: {
     colors: true,
@@ -34,7 +36,6 @@ server.listen(PORT);
 
 const backend = nodemon({
   exec: 'node',
-  restartable: 'rs',
   script: './server/server',
   verbose: true,
   watch: [

@@ -21,8 +21,15 @@ html,body,.root
 a
   cursor: pointer
 
-body
-  background: radial-gradient(farthest-corner at 50% 50%, #f7f7f7 0%, #ccc 100%)
+html
+  overflow-y: scroll
 
+body
+  background-image: radial-gradient(farthest-corner at 50% 50%, #f7f7f7 0%, #ccc 100%)
+  background-repeat: no-repeat
+  background-attachment: fixed
 .clearfix
   clear: both
+
+div[id^="__lpform"]
+  display: none

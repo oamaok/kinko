@@ -1,33 +1,37 @@
-module Pages.Files.Model exposing (Msg(..), Model, initialModel)
+module Pages.Files.Model exposing (..)
 
 import Http
 
 type Msg
   = Init
-  | InitResponse (Result Http.Error Response)
-  | EnterDirectory Int
-  | DirectoryResponse (Result Http.Error Response)
-  | GetDownloadLink Int
-  | DownloadLinkResponse (Result Http.Error Response)
+  | InitResponse (Result Http.Error FileList)
+  | FilterChange String
+  | EnterDirectory String
+  | DirectoryResponse (Result Http.Error FileList)
+  | GetDownloadLink String
+  | DownloadLinkResponse (Result Http.Error FileList)
 
-type alias Response = List FileEntry
+type alias FileList = List FileEntry
 
 type Children = Children (List FileEntry)
 
 type alias FileEntry =
-  { id : Int
+  { id : String
   , name : String
   , isDirectory : Bool
-  , children : Children
   }
 
 type alias Model =
-  { entries : List FileEntry
+  { isLoading : Bool
+  , entries : List FileEntry
+  , filter : String
   , path : List (Int, String)
   }
 
 initialModel : Model
 initialModel =
-  { entries = []
+  { isLoading = True
+  , entries = []
+  , filter = ""
   , path = []
   }
