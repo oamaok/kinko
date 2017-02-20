@@ -16,7 +16,7 @@ const app = new Koa();
 
 app.use(bodyParser());
 app.use(errorHandler());
-app.use(json({ pretty: false }));
+app.use(json({ pretty: true }));
 
 // Initialize configurations
 Object.assign(app, { config });

@@ -9,7 +9,7 @@ module.exports = (app) => {
   app.use(async (ctx, next) => {
     await next();
     const authToken = ctx.cookies.get('token');
-    Object.assign(ctx, { user: {} });
+    Object.assign(ctx, { user: null, accessToken: null });
 
     const token = await AccessToken.findById(authToken, { include: {
       model: User,
