@@ -1,4 +1,9 @@
-module Pages.Login.Model exposing (Model, initialModel)
+module Pages.Login.Model exposing (Msg(..), Model, initialModel)
+
+type Msg
+  = ClearCredentials
+  | UsernameChange String
+  | PasswordChange String
 
 type alias Model = {
   username : String,

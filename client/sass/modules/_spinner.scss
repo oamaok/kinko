@@ -1,16 +1,17 @@
 .spinner,
 .spinner:after {
   border-radius: 50%;
-  width: 10em;
-  height: 10em;
+  width: 5em;
+  height: 5em;
+  margin: 2em auto;
 }
 .spinner {
   position: relative;
   text-indent: -9999em;
-  border-top: 1.5em solid rgba(170,68,68, 0.2);
-  border-right: 1.5em solid rgba(170,68,68, 0.2);
-  border-bottom: 1.5em solid rgba(170,68,68, 0.2);
-  border-left: 1.5em solid #aa4444;
+  border-top: 1em solid transparent;
+  border-right: 1em solid #666;
+  border-bottom: 1em solid transparent;
+  border-left: 1em solid #666;
   -webkit-transform: translateZ(0);
   -ms-transform: translateZ(0);
   transform: translateZ(0);

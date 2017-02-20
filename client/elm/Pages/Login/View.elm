@@ -7,7 +7,7 @@ import Html.Events exposing (onInput, onSubmit)
 import App.Model as App
 import Aliases exposing (ViewFn)
 import Auth
-import Pages.Login.Update as LoginUpdate
+import Pages.Login.Model exposing (Msg(UsernameChange, PasswordChange))
 
 view : ViewFn
 view model =
@@ -31,12 +31,12 @@ view model =
         form [ class "panel-body", onSubmit <| App.AuthMsg <| Auth.Login username password ] [
           div [ class "input-group" ] [
             label [] [ text "username" ],
-            input [ type_ "text", disabled loading, onInput <| App.LoginMsg << LoginUpdate.UsernameChange ] []
+            input [ type_ "text", disabled loading, onInput <| App.LoginMsg << UsernameChange ] []
           ],
 
           div [ class "input-group" ] [
             label [] [ text "password" ],
-            input [ type_ "password", disabled loading, onInput <| App.LoginMsg << LoginUpdate.PasswordChange ] []
+            input [ type_ "password", disabled loading, onInput <| App.LoginMsg << PasswordChange ] []
           ],
           div [ class "error" ] [ text "log in failed." ],
           input [ type_ "submit", disabled loading, value "log in"] [],

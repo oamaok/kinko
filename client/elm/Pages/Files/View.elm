@@ -1,7 +1,7 @@
 module Pages.Files.View exposing (view)
 
 import Html exposing (..)
-import Html.Attributes exposing (type_, class, colspan)
+import Html.Attributes exposing (type_, class, hidden)
 import Html.Events exposing (onInput)
 
 import App.Model as App
@@ -13,38 +13,57 @@ import Pages.Files.Model exposing (Msg(..), FileEntry)
 
 directoryRow : FileEntry -> Html App.Msg
 directoryRow entry =
-  tr [] [
-    td [] [ icon "folder" ],
-    td [] [ text entry.name ],
-    td [ colspan 2 ] []
-  ]
-
-fileRow : FileEntry -> Html App.Msg
-fileRow entry =
-  tr [] [
-    td [] [ ],
-    td [] [
+  tr [ class "directory" ] [
+    td [ class "filetype" ] [ icon "folder" ],
+    td [ class "name" ] [
       a [] [
         text entry.name
       ]
     ],
-    td [] [ icon "link" ],
-    td [] [ icon "delete_forever" ]
+    td [ class "tools" ] [],
+    td [ class "tools" ] [ icon "delete_forever" ]
   ]
+
+fileRow : FileEntry -> Html App.Msg
+fileRow entry =
+  tr [ class "file" ] [
+    td [ class "filetype" ] [ ],
+    td [ class "name" ] [
+      a [] [
+        text entry.name
+      ]
+    ],
+    td [ class "tools" ] [ icon "link" ],
+    td [ class "tools" ] [ icon "delete_forever" ]
+  ]
+
+nameFilter : String -> String -> Bool
+nameFilter terms subject =
+  String.words terms
+    |> List.all (\word -> String.contains word subject) 
 
 view : ViewFn
 view model =
   let
+    isLoading =
+      model.files.isLoading
+    
+    filterWords =
+      String.words model.files.filter
+    
     entries = model.files.entries
       |> List.filter
-        (\entry ->
-          String.contains
-            (String.toLower model.files.filter)
-            (String.toLower entry.name)
-        )
+        (\entry -> List.all (\word -> String.contains word entry.name) filterWords)
+
+    directories = entries
+      |> List.filter .isDirectory 
       |> List.sortBy .name
-      |> List.sortBy (\entry -> if entry.isDirectory then 0 else 1)
-      |> List.map (\entry -> if entry.isDirectory then directoryRow entry else fileRow entry)
+      |> List.map directoryRow
+
+    files = entries
+      |> List.filter (\entry -> not entry.isDirectory)
+      |> List.sortBy .name
+      |> List.map fileRow
   in
     MainContainer.view model [
       div [ class "container" ] [
@@ -54,7 +73,7 @@ view model =
             text "browse"
           ],
           div [ class "panel-body" ] [
-            form [ class "search" ] [
+            div [ class "input-group search" ] [
               label [] [
                 icon "filter_list",
                 text "filter"
@@ -65,9 +84,10 @@ view model =
               ] []
             ],
             div [ class "well" ] [
-              table [] [
-                tbody [] entries
-              ]
+              table [ hidden isLoading ] [
+                tbody [] (List.append directories files)
+              ],
+              div [ class "spinner", hidden (not isLoading) ] []
             ]
           ]
         ]

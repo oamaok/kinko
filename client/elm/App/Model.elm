@@ -4,7 +4,6 @@ import Navigation
 
 import Auth
 
-import Pages.Login.Update as LoginUpdate
 import Pages.Login.Model as LoginModel
 import Pages.Files.Model as FilesModel
 
@@ -18,7 +17,7 @@ type alias Model =
 type Msg
   = AuthMsg Auth.Msg
   | FilesMsg FilesModel.Msg
-  | LoginMsg LoginUpdate.Msg
+  | LoginMsg LoginModel.Msg
   | GoTo String
   | UrlChange Navigation.Location
 
