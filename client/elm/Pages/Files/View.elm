@@ -40,7 +40,8 @@ fileRow entry =
 nameFilter : String -> String -> Bool
 nameFilter terms subject =
   String.words terms
-    |> List.all (\word -> String.contains word subject) 
+    |> List.map String.toUpper
+    |> List.all (\word -> String.contains word (String.toUpper subject)) 
 
 view : ViewFn
 view model =
@@ -48,12 +49,9 @@ view model =
     isLoading =
       model.files.isLoading
     
-    filterWords =
-      String.words model.files.filter
-    
     entries = model.files.entries
       |> List.filter
-        (\entry -> List.all (\word -> String.contains word entry.name) filterWords)
+        (\entry -> nameFilter model.files.filter entry.name)
 
     directories = entries
       |> List.filter .isDirectory 

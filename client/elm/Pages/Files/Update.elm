@@ -14,7 +14,7 @@ fileListDecoder =
 
 initFiles : Cmd Msg
 initFiles =
-  Http.send InitResponse (Http.get "/api/files" fileListDecoder)
+  Http.send InitResponse (Http.get "/api/f/list" fileListDecoder)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
