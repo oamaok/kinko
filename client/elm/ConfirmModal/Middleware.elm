@@ -9,7 +9,7 @@ middleware update appMsg model =
   case appMsg of
     ConfirmModalMsg msg ->
       case msg of
-        Confirm {title, message, callbackMessage} ->
+        Confirm {title, message, onConfirm} ->
           let
             confirmModal =
               model.confirmModal
@@ -18,18 +18,18 @@ middleware update appMsg model =
               | isOpen = True
               , title = title
               , message = message
-              , callbackMessage = Just callbackMessage
+              , onConfirm = Just onConfirm
               }
           in
             ({ model | confirmModal = updatedModel }, Cmd.none)
         Close True ->
           let
-            callbackMessage =
-              Maybe.withDefault appMsg model.confirmModal.callbackMessage
+            onConfirm =
+              Maybe.withDefault appMsg model.confirmModal.onConfirm
             updatedModel =
               { model | confirmModal = initialModel }
           in
-            update callbackMessage updatedModel
+            update onConfirm updatedModel
         Close False ->
           let
             updatedModel =

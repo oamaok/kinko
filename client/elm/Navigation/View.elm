@@ -18,7 +18,7 @@ view model =
       <| Confirm
         { title = "you're about to be logged out"
         , message = "are you sure you want to be logged out?"
-        , callbackMessage = AuthMsg Logout
+        , onConfirm = AuthMsg Logout
         }
   in
     div [ class "navigation" ] [
