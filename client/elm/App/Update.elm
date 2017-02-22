@@ -2,21 +2,22 @@ module App.Update exposing (update)
 
 import Navigation
 
-import Aliases exposing (UpdateFn)
-import App.Model exposing (..)
+import Aliases exposing (UpdateFn, MiddlewareFn)
+import App.Model exposing (Msg(AuthMsg, LoginMsg, FilesMsg, GoTo))
 import Auth
+
 import Routes
+import ConfirmModal.Middleware as ConfirmModal
 
 import Pages.Login.Update as LoginUpdate
 import Pages.Files.Update as FilesUpdate
 
-update_ : UpdateFn
-update_ msg model =
+baseUpdate : UpdateFn
+baseUpdate msg model =
   case msg of
     AuthMsg authMsg ->
       let
-        authModel = model.auth
-        (childModel, childCmd) = Auth.update authMsg authModel
+        (childModel, childCmd) = Auth.update authMsg model.auth
       in
         ({ model | auth = childModel }, Cmd.map AuthMsg childCmd)
     LoginMsg pageMsg ->
@@ -34,5 +35,13 @@ update_ msg model =
     _ ->
       (model, Cmd.none)
 
+middleware : List (MiddlewareFn)
+middleware =
+  [ Routes.middleware
+  , ConfirmModal.middleware
+  ]
+
+-- Apply middleware update functions
 update : UpdateFn
-update msg model = Routes.update msg model update_
+update msg model =
+  (List.foldl (<|) baseUpdate middleware) msg model

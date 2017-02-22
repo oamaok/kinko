@@ -39,8 +39,8 @@ fileRow entry =
 
 nameFilter : String -> String -> Bool
 nameFilter terms subject =
-  String.words terms
-    |> List.map String.toUpper
+  String.toUpper terms
+    |> String.words
     |> List.all (\word -> String.contains word (String.toUpper subject)) 
 
 view : ViewFn
@@ -63,31 +63,31 @@ view model =
       |> List.sortBy .name
       |> List.map fileRow
   in
-    MainContainer.view model [
-      div [ class "container" ] [
-        div [ class "panel file-browser" ] [
-          div [ class "panel-header" ] [
-            icon "list",
-            text "browse"
-          ],
-          div [ class "panel-body" ] [
-            div [ class "input-group search" ] [
-              label [] [
-                icon "filter_list",
-                text "filter"
-              ],
-              input [
-                type_ "text",
-                onInput <| App.FilesMsg << FilterChange
-              ] []
-            ],
-            div [ class "well" ] [
-              table [ hidden isLoading ] [
-                tbody [] (List.append directories files)
-              ],
-              div [ class "spinner", hidden (not isLoading) ] []
+    MainContainer.view model
+      [ div [ class "container" ]
+        [ div [ class "panel file-browser" ]
+          [ div [ class "panel-header" ] [
+              icon "list",
+              text "browse"
+            ]
+          , div [ class "panel-body" ]
+            [ div [ class "spinner", hidden (not isLoading) ] []
+            , div [ hidden isLoading ]
+              [ div [ class "input-group search" ]
+                [ label []
+                  [ icon "filter_list"
+                  , text "filter"
+                  ]
+                , input
+                  [ type_ "text"
+                  , onInput <| App.FilesMsg << FilterChange
+                  ] []
+                ]
+              , div [ class "well" ]
+                [ table [] [ tbody [] (List.append directories files) ]
+                ]
+              ]
             ]
           ]
         ]
       ]
-    ]

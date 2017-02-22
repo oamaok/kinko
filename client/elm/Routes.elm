@@ -1,8 +1,8 @@
-module Routes exposing (view, update)
+module Routes exposing (view, middleware)
 
 import Router exposing (Router, MessageType(..), createRouter)
 import App.Model exposing (Model, Msg(..))
-import Aliases exposing (UpdateFn, ViewFn)
+import Aliases exposing (MiddlewareFn, ViewFn)
 
 import Pages.Login.View as LoginPage
 import Pages.Login.Model as LoginModel
@@ -28,5 +28,5 @@ router = createRouter [
 view : ViewFn
 view = router.view
 
-update : Msg -> Model -> UpdateFn -> (Model, Cmd Msg)
-update = router.update
+middleware : MiddlewareFn
+middleware = router.middleware

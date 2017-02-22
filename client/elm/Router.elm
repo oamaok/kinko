@@ -2,7 +2,7 @@ module Router exposing (Route, Router, MessageType(..), createRouter)
 
 import Regex exposing (HowMany(..), regex)
 
-import Aliases exposing (ViewFn, UpdateFn)
+import Aliases exposing (ViewFn, MiddlewareFn)
 import App.Model as AppModel exposing (Model, Msg(..))
 import Pages.NotFound.View as NotFound
 
@@ -19,7 +19,7 @@ type alias Route =
 
 type alias Router =
   { view : ViewFn
-  , update : Msg -> Model -> UpdateFn -> (Model, Cmd Msg)
+  , middleware : MiddlewareFn
   }
 
 type alias ScoredRoute =
@@ -84,8 +84,8 @@ createRouter routes =
           Nothing ->
             NotFound.view model
 
-    routerUpdate : Msg -> Model -> UpdateFn -> (Model, Cmd Msg)
-    routerUpdate msg model update =
+    middleware : MiddlewareFn
+    middleware update msg model =
       case msg of
         -- The only case the router should handle
         UrlChange location ->
@@ -112,4 +112,4 @@ createRouter routes =
         -- If the message is not an url change, let the actual update function handle it
         _ -> update msg model
   in
-    Router view routerUpdate
+    Router view middleware
