@@ -1,12 +1,13 @@
-import Navigation
+module Main exposing (..)
 
+import Navigation
 import Aliases exposing (ViewFn)
 import Auth
-import App.Model  exposing (Model, Msg(..), initialModel)
+import App.Model exposing (Model, Msg(..), initialModel)
 import App.Update exposing (update)
 import Routes
-
 import Pages.Initializer.View as Initializer
+
 
 main : Program Never Model Msg
 main =
@@ -17,9 +18,11 @@ main =
     , subscriptions = (\_ -> Sub.none)
     }
 
-init : Navigation.Location -> (Model, Cmd Msg)
+
+init : Navigation.Location -> ( Model, Cmd Msg )
 init location =
   update (AuthMsg <| Auth.Init location) initialModel
+
 
 view : ViewFn
 view model =
