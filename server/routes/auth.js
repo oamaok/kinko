@@ -28,10 +28,10 @@ module.exports = (app, router) => {
       ctx.body = {
         id: user.id,
         username: user.username,
-        roles: user.Roles.map(role => role.name),
+        roles: user.roles.map(role => role.name),
       };
     } catch (err) {
-      ctx.throw(err, 401);
+      ctx.throw(401, err);
     }
   })
   .get('/logout', async (ctx, next) => {

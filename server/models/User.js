@@ -3,84 +3,91 @@ const {
   delay,
 } = require('../utils');
 
-function define(app, S, sequelize) {
-  return sequelize.define('User', {
-    id: {
-      type: S.UUID,
-      defaultValue: S.UUIDV4,
-      primaryKey: true,
-    },
-
-    username: {
-      type: S.TEXT,
-      allowNull: false,
-      unique: true,
-      validate: {
-        isAlphanumeric: true,
-        len: [3, 20],
-      },
-    },
-
-    password: {
-      type: S.TEXT,
-      allowNull: false,
-
-      // Automatically hash the password any time it is set.
-      set: function passwordSetter(plain) {
-        return this.setDataValue(
-          'password',
-          bcrypt.hashSync(plain, bcrypt.genSaltSync(12))
-        );
-      },
-    },
-  });
-}
-
-function expand(app, S, models) {
-  const {
-    User,
-    Role,
-    RoleMapping,
-    AccessToken,
-  } = models;
-
-  User.belongsToMany(Role, { through: RoleMapping });
-  User.hasMany(AccessToken);
-
-  User.login = async (username, password) => {
-    const startTime = (new Date()).getTime();
-    const error = new Error('Invalid username or password.');
-
-    try {
-      const user = await User.findOne({ where: { username }, include: { model: Role } });
-
-      if (!user) {
-        throw error;
-      }
-
-      const correctPassword = bcrypt.compareSync(password, user.password);
-
-      if (!correctPassword) {
-        throw error;
-      }
-
-      const accessToken = await AccessToken.create({
-        UserId: user.id,
-        ttl: app.config.auth.ttl,
-      });
-
-      return {
-        accessToken,
-        user,
-      };
-    } catch (err) {
-      await delay(1500 - ((new Date()).getTime() - startTime));
-      throw err;
-    }
-  };
-}
-
 module.exports = {
-  define,
-  expand,
+  name: 'User',
+
+  properties: {
+    id: {
+      type: 'uuid',
+      primaryKey: true,
+      defaultFn: 'uuidv4',
+    },
+    username: {
+      type: 'text',
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: 'text',
+      hidden: true,
+      setter: plain => bcrypt.hashSync(plain, bcrypt.genSaltSync(12)),
+    },
+    deleted: {
+      type: 'boolean',
+      required: true,
+      default: false,
+    },
+  },
+
+  relations: {
+    roles: {
+      model: 'Role',
+      type: 'belongsToMany',
+      foreignKey: 'userId',
+      through: 'RoleMapping',
+    },
+  },
+
+  extend: (app) => {
+    const {
+      User,
+      Role,
+      AccessToken,
+    } = app.models;
+
+    async function login(username, password) {
+      const startTime = (new Date()).getTime();
+      const error = new Error('Invalid username or password.');
+
+      try {
+        const user = await User.findOne({ where: { username }, include: { model: Role, as: 'roles' } });
+
+        if (!user) {
+          throw error;
+        }
+
+        const correctPassword = bcrypt.compareSync(password, user.password);
+
+        if (!correctPassword) {
+          throw error;
+        }
+
+        const accessToken = await AccessToken.create({
+          userId: user.id,
+          ttl: app.config.auth.ttl,
+        });
+
+        return {
+          accessToken,
+          user,
+        };
+      } catch (err) {
+        console.log(err);
+        await delay(1500 - ((new Date()).getTime() - startTime));
+        throw err;
+      }
+    }
+
+    return {
+      login,
+    };
+  },
 };
+
+/*
+  User.defineSetter('password', value => value);
+
+  User.login =
+};
+
+*/

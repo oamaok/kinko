@@ -13,7 +13,11 @@ module.exports = (app) => {
 
     const token = await AccessToken.findById(authToken, { include: {
       model: User,
-      include: Role,
+      as: 'user',
+      include: {
+        model: Role,
+        as: 'roles',
+      },
     } });
 
     if (!token) {
@@ -37,13 +41,13 @@ module.exports = (app) => {
       overwrite: true,
     });
 
-    const user = token.User;
+    const user = token.user;
 
     Object.assign(ctx, {
       user: {
         id: user.id,
         username: user.username,
-        roles: user.Roles.map(role => role.name),
+        roles: user.roles.map(role => role.name),
       },
       accessToken: {
         id: token.id,
