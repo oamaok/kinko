@@ -72,7 +72,6 @@ module.exports = {
           user,
         };
       } catch (err) {
-        console.log(err);
         await delay(1500 - ((new Date()).getTime() - startTime));
         throw err;
       }
@@ -83,11 +82,3 @@ module.exports = {
     };
   },
 };
-
-/*
-  User.defineSetter('password', value => value);
-
-  User.login =
-};
-
-*/

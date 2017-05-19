@@ -32,7 +32,7 @@ module.exports = (app, router) => {
 
         return File.findOrCreate({
           where: {
-            file: absolutePath,
+            path: absolutePath,
             isDirectory,
           },
           defaults: {
@@ -40,14 +40,14 @@ module.exports = (app, router) => {
           },
           include: {
             model: User,
-            as: 'AccessibleTo',
+            as: 'accessibleTo',
           },
         });
       });
 
     const files = (await Promise.all(pFiles))
       .map(result => result[0])
-      .filter(file => file.AccessibleTo.some(u => u.id === user.id) || isAdmin);
+      .filter(file => file.accessibleTo.some(u => u.id === user.id) || isAdmin);
 
     ctx.body = files
       .map(file => ({
@@ -70,7 +70,7 @@ module.exports = (app, router) => {
     const file = await File.findById(ctx.params.id, {
       include: {
         model: User,
-        as: 'AccessibleTo',
+        as: 'accessibleTo',
       },
     });
 
@@ -78,7 +78,7 @@ module.exports = (app, router) => {
       return;
     }
 
-    const isAccessible = file.AccessibleTo.some(u => u.id === user.id);
+    const isAccessible = file.accessibleTo.some(u => u.id === user.id);
     const isAdmin = user.roles.some(role => role === 'admin');
 
     if (!(isAccessible || isAdmin)) {

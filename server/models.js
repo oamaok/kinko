@@ -113,12 +113,20 @@ function initializeModels(app) {
     });
     // Validate relations
     model.relations.forEach((relation) => {
-      if (!modelNames.includes(relation.model)) {
-        throw new Error(`Model definition of '${model.name}' is invalid: model '${relation.model}' does not exist, but is referenced`);
-      }
-
       if (!validRelations.includes(relation.type)) {
         throw new Error(`Model definition of '${model.name}' is invalid: relation '${relation.name}' has an invalid type '${relation.type}'`);
+      }
+
+      if (relation.type === 'belongsToMany' && !relation.through) {
+        throw new Error(`Model definition of '${model.name}' is invalid: 'belongsToMany' relations need a 'through' model`);
+      }
+
+      if (!modelNames.includes(relation.model)) {
+        throw new Error(`Model definition of '${model.name}' is invalid: model '${relation.model}' is referenced, but does not exist`);
+      }
+
+      if (relation.through && !modelNames.includes(relation.through)) {
+        throw new Error(`Model definition of '${model.name}' is invalid: model '${relation.through}' is referenced, but does not exist`);
       }
     });
   });

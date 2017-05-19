@@ -2,6 +2,7 @@ input
   transition: ease-out 0.1s all
   outline: none
   color: #222
+  border-bottom: 2px solid transparent
   &[type="text"], &[type="password"]
     padding: 0.5em
 
@@ -10,14 +11,13 @@ input
     // border: 1px solid #ccc
     background-image: none !important
     &:hover
-      box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.2), inset 0 -2px 0 lighten(#a44, 20%)
+      border-color: lighten(#a44, 20%)
     &:focus
       border-color: #a44
       outline: none
-      box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.2), inset 0 -2px 0 #a44
     &:disabled, &:hover:disabled
       background-color: #fff
-      border-color: #ccc
+      border-color: transparent
       color: #ccc
 
 input[type="button"], input[type="submit"], button

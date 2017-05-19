@@ -1,11 +1,13 @@
+const crypto = require('crypto');
+
 module.exports = {
   name: 'AccessToken',
 
   properties: {
     id: {
-      type: 'uuid',
+      type: 'text',
       primaryKey: true,
-      defaultFn: 'uuidv4',
+      default: () => crypto.randomBytes(128).toString('base64'),
     },
     ttl: {
       type: 'integer',

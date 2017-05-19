@@ -31,15 +31,17 @@ Role.findOne({ where: { name: 'admin' } })
     if (!field) {
       process.stdout.write('Creating the user... ');
 
-      User.create(admin)
-      .then(user =>
-        RoleMapping.create({
-          userId: user.id,
-          roleId: role.id,
-        })
+      app.sequelize.transaction(transaction =>
+        User.create(admin, { transaction })
+        .then(user =>
+          RoleMapping.create({
+            userId: user.id,
+            roleId: role.id,
+          }, { transaction })
+        )
       )
       .then(() => {
-        console.log('Done!\n');
+        console.log('Done!');
         process.exit(0);
       })
       .catch((err) => {
